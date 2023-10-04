@@ -1,0 +1,545 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'CFCA6 App',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        textTheme: TextTheme(
+          bodyText1: TextStyle(color: Colors.black),
+          bodyText2: TextStyle(color: Colors.black),
+        ),
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            'CFCA6 App',
+            style: TextStyle(fontSize: 25),
+          ),
+        ),
+      ),
+      body: _buildPage(_selectedIndex),
+      backgroundColor: Color(0xFF228B22),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Main',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Educational Content',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calculate),
+            label: 'Carbon Calculator',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt),
+            label: 'Personalized Reports',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events),
+            label: 'Sustainability Challenge',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        onTap: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return Center(child: Text('Main Page'));
+      case 1:
+        return EducationalContentPage();
+      case 2:
+        return CarbonCalculatorPage();
+      case 3:
+        return Center(child: Text('Personalized Reports Page'));
+      case 4:
+        return Center(child: Text('Sustainability Challenge Page'));
+      default:
+        return Center(child: Text('Unknown Page'));
+    }
+  }
+}
+
+class EducationalContentPage extends StatefulWidget {
+  @override
+  _EducationalContentPageState createState() => _EducationalContentPageState();
+}
+
+class _EducationalContentPageState extends State<EducationalContentPage> {
+  late PageController _pageController;
+  int _currentPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentPageIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildFlowBar(String title, bool isSelected, bool isAnswered) {
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 20.0,
+            color: (isSelected || isAnswered) ? Colors.black : Colors.grey,
+            child: Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color:
+                      (isSelected || isAnswered) ? Colors.white : Colors.grey,
+                  fontWeight: isSelected || isAnswered
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (int index) {
+              setState(() {
+                _currentPageIndex = index;
+              });
+            },
+            children: <Widget>[
+              EducationalContentItem(
+                imageAsset: 'assets/image1.jpg',
+                content:
+                    'Sample Text Content for Page 1.\nYou can add more content here.',
+              ),
+              EducationalContentItem(
+                imageAsset: 'assets/image2.jpg',
+                content:
+                    'Sample Text Content for Page 2.\nYou can add more content here.',
+              ),
+              // Add more pages if needed
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (int i = 0; i < 2; i++)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  width: 10.0,
+                  height: 10.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: i == _currentPageIndex ? Colors.blue : Colors.grey,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class EducationalContentItem extends StatelessWidget {
+  final String imageAsset;
+  final String content;
+
+  const EducationalContentItem({
+    required this.imageAsset,
+    required this.content,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: (MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top -
+                  kToolbarHeight) /
+              2,
+          child: Image.asset(
+            imageAsset,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: (MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    kToolbarHeight) /
+                2,
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Text(
+                content,
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CarbonCalculatorPage extends StatefulWidget {
+  @override
+  _CarbonCalculatorPageState createState() => _CarbonCalculatorPageState();
+}
+
+class _CarbonCalculatorPageState extends State<CarbonCalculatorPage> {
+  late PageController _pageController;
+  int _currentPageIndex = 0;
+  List<bool> _isHouseholdAnswered = List.filled(2, false);
+  List<bool> _isEnergyAnswered = List.filled(2, false);
+  List<bool> _isTransportationAnswered = List.filled(2, false);
+  List<bool> _isWasteAnswered = List.filled(2, false);
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentPageIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildFlowBar(String title, bool isSelected, bool isAnswered) {
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 20.0,
+            color: (isSelected || isAnswered) ? Colors.black : Colors.grey,
+            child: Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color:
+                      (isSelected || isAnswered) ? Colors.white : Colors.grey,
+                  fontWeight: isSelected || isAnswered
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper function to build a set of sample questions
+  Widget _buildSampleQuestions({
+    required String sectionTitle,
+    required List<String> questions,
+    required List<bool> isAnswered,
+  }) {
+    bool allQuestionsAnswered = isAnswered.every((answered) => answered);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Top-left arrow button to go back to the previous set of questions
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                _pageController.previousPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                );
+              },
+            ),
+          ],
+        ),
+        // Flow bars for Household, Energy, Transportation, Waste
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildFlowBar('Household', _currentPageIndex == 1,
+                  _getAnsweredStatus(_isHouseholdAnswered)),
+              _buildFlowBar('Energy', _currentPageIndex == 2,
+                  _getAnsweredStatus(_isEnergyAnswered)),
+              _buildFlowBar('Transportation', _currentPageIndex == 3,
+                  _getAnsweredStatus(_isTransportationAnswered)),
+              _buildFlowBar('Waste', _currentPageIndex == 4,
+                  _getAnsweredStatus(_isWasteAnswered)),
+            ],
+          ),
+        ),
+        Text(
+          sectionTitle,
+          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
+        for (int i = 0; i < questions.length; i++)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  questions[i],
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  onChanged: (text) {
+                    // Update the answered state when the answer box is filled
+                    setState(() {
+                      _updateAnsweredStatus(i, text.isNotEmpty);
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Enter your answer here',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ElevatedButton(
+          onPressed: allQuestionsAnswered
+              ? () {
+                  // Navigate to the next page if all questions are answered
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                  );
+                }
+              : null, // Disable the button if not all questions are answered
+          child: Text('Next'),
+        ),
+      ],
+    );
+  }
+
+  // Helper function to get the answered status for the flow bar
+  bool _getAnsweredStatus(List<bool> isAnswered) {
+    return isAnswered.isNotEmpty && isAnswered.every((answered) => answered);
+  }
+
+  // Helper function to update the answered status for a set of questions
+  void _updateAnsweredStatus(int questionIndex, bool isAnswered) {
+    setState(() {
+      if (_currentPageIndex == 1) {
+        if (questionIndex >= 0 && questionIndex < _isHouseholdAnswered.length) {
+          _isHouseholdAnswered[questionIndex] = isAnswered;
+        }
+      } else if (_currentPageIndex == 2) {
+        if (questionIndex >= 0 && questionIndex < _isEnergyAnswered.length) {
+          _isEnergyAnswered[questionIndex] = isAnswered;
+        }
+      } else if (_currentPageIndex == 3) {
+        if (questionIndex >= 0 &&
+            questionIndex < _isTransportationAnswered.length) {
+          _isTransportationAnswered[questionIndex] = isAnswered;
+        }
+      } else if (_currentPageIndex == 4) {
+        if (questionIndex >= 0 && questionIndex < _isWasteAnswered.length) {
+          _isWasteAnswered[questionIndex] = isAnswered;
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView(
+      controller: _pageController,
+      onPageChanged: (int index) {
+        setState(() {
+          _currentPageIndex = index;
+        });
+      },
+      children: <Widget>[
+        // Page 1 (Introduction)
+        Column(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text(
+                  'Short Summary of Text',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: Image.asset('assets/image3.jpg', fit: BoxFit.cover),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to Page 2 (Household)
+                _pageController.animateToPage(
+                  1, // Page 2 index (Household)
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                );
+              },
+              child: Text('Calculate My Footprint'),
+            ),
+          ],
+        ),
+
+        // Page 2 (Household)
+        _buildSampleQuestions(
+          sectionTitle: 'Sample Question Description for Household',
+          questions: [
+            'Sample Household Question 1',
+            'Sample Household Question 2',
+          ],
+          isAnswered: _isHouseholdAnswered,
+        ),
+
+        // Page 3 (Energy)
+        _buildSampleQuestions(
+          sectionTitle: 'Sample Question Description for Energy',
+          questions: [
+            'Sample Energy Question 1',
+            'Sample Energy Question 2',
+          ],
+          isAnswered: _isEnergyAnswered,
+        ),
+
+        // Page 4 (Transportation)
+        _buildSampleQuestions(
+          sectionTitle: 'Sample Question Description for Transportation',
+          questions: [
+            'Sample Transportation Question 1',
+            'Sample Transportation Question 2',
+          ],
+          isAnswered: _isTransportationAnswered,
+        ),
+
+        // Page 5 (Waste)
+        _buildSampleQuestions(
+          sectionTitle: 'Sample Question Description for Waste',
+          questions: [
+            'Sample Waste Question 1',
+            'Sample Waste Question 2',
+          ],
+          isAnswered: _isWasteAnswered,
+        ),
+
+        // Page 6 (Carbon Footprint Emission Reports)
+        Column(
+          children: [
+            // Top-left arrow button to go back to Page 5 (Waste)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    _pageController.animateToPage(
+                      4, // Page 5 index (Waste)
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease,
+                    );
+                  },
+                ),
+              ],
+            ),
+            // Flow bars for Household, Energy, Transportation, Waste
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildFlowBar('Household', _currentPageIndex == 1,
+                      _getAnsweredStatus(_isHouseholdAnswered)),
+                  _buildFlowBar('Energy', _currentPageIndex == 2,
+                      _getAnsweredStatus(_isEnergyAnswered)),
+                  _buildFlowBar('Transportation', _currentPageIndex == 3,
+                      _getAnsweredStatus(_isTransportationAnswered)),
+                  _buildFlowBar('Waste', _currentPageIndex == 4,
+                      _getAnsweredStatus(_isWasteAnswered)),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Center(
+                child: Text(
+                  'Carbon Footprint Emission Reports',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+            // Content for Carbon Footprint Emission Reports (to be added)
+          ],
+        ),
+      ],
+    );
+  }
+}
